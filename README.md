@@ -1,9 +1,9 @@
 # Start
-    ## In /client
-    yarn start
+## In /client
+`yarn start`
 
-    ## In /server
-    yarn start
+## In /server
+`yarn start`
 
 # Reference
 
