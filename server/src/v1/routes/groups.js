@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const Group = require('../models/group');
+const { isAdmin } = require('../middleware/authMiddleware');
 
-// POST /groups/create
-router.post('/create', async (req, res) => {
+router.post('/create', isAdmin, async (req, res) => {
   try {
-    const { name, userId } = req.body; // Assuming the creator is automatically a member
-    const newGroup = new Group({ name, members: [userId] });
+    const newGroup = new Group(req.body); // Simplified; in practice, validate and sanitize input
     await newGroup.save();
-    res.status(201).json(newGroup);
+    res.status(201).send(newGroup);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).send(error);
   }
 });
+
+module.exports = router;

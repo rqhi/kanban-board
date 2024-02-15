@@ -3,6 +3,8 @@ const { param, body } = require('express-validator')
 const tokenHandler = require('../handlers/tokenHandler')
 const validation = require('../handlers/validation')
 const taskController = require('../controllers/task')
+const Task = require('../models/task');
+const { isTeamLeader } = require('../middleware/authMiddleware');
 
 router.post(
   '/',
@@ -66,5 +68,16 @@ router.put(
   tokenHandler.verifyToken,
   taskController.update
 )
+
+router.patch('/assign/:taskId', isTeamLeader, async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const { userId } = req.body; // Assuming the request body contains the ID of the user to assign the task to
+    const task = await Task.findByIdAndUpdate(taskId, { assignedTo: userId }, { new: true });
+    res.send(task);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
 
 module.exports = router

@@ -26,7 +26,9 @@ const taskSchema = new Schema({
   },
   position: {
     type: Number
-  }
+  },
+  assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+
 }, schemaOptions)
 
 module.exports = mongoose.model('Task', taskSchema)
