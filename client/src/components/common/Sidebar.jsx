@@ -141,7 +141,7 @@ const Sidebar = () => {
             <Typography variant="body2" fontWeight="700">
               Private
             </Typography>
-            { user.role === "Administrator" || user.role === "Projektmanager" && (
+            { (user.role === "Projektmanager" || user.role === "Administrator") && (
             <IconButton onClick={addBoard}>
               <AddBoxOutlinedIcon fontSize="small" />
             </IconButton>
