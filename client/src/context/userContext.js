@@ -1,19 +1,27 @@
 import React, { createContext, useContext, useState } from 'react';
+import axios from 'axios'; // axios for making HTTP requests
 
-// Creating a context
 const UserContext = createContext();
 
-// Provider component that wraps your app and makes the user object available to any child component
 export const UserProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
 
-  // Pretend we fetch this user object from your authentication flow
-  const login = (user) => {
-    setCurrentUser(user);
+  const login = async (username, password) => {
+    try {
+      // Replace with your actual login endpoint
+      const response = await axios.post('/api/login', { username, password });
+      const { user, token } = response.data;
+      setCurrentUser(user);
+      localStorage.setItem('token', token); // Save the token in local storage (or another secure place)
+    } catch (error) {
+      console.error("Login failed:", error);
+      // Handle login error (e.g., show an error message)
+    }
   };
 
   const logout = () => {
     setCurrentUser(null);
+    localStorage.removeItem('token'); // Clear the token on logout
   };
 
   return (
@@ -23,5 +31,4 @@ export const UserProvider = ({ children }) => {
   );
 };
 
-// Custom hook to use the user context
 export const useUser = () => useContext(UserContext);

@@ -4,8 +4,8 @@ const { schemaOptions } = require('./modelOptions')
 const userSchema = new mongoose.Schema({
   role: {
     type: String,
-    enum: ['Admin', 'Teamleiter', 'Mitarbeiter'],
-    default: 'Mitarbeiter'
+    enum: ['Administrator', 'Projektmanager', 'Teammitglied'],
+    default: 'Teammitglied'
   },
   groupId: { 
     type: mongoose.Schema.Types.ObjectId, 

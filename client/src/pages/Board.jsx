@@ -180,7 +180,7 @@ const Board = () => {
           <TextField
             value={description}
             onChange={updateDescription}
-            placeholder='Add a description'
+            placeholder='Füge eine Beschreibung hinzu'
             variant='outlined'
             multiline
             fullWidth

@@ -1,4 +1,5 @@
-import { useSelector, useDispatch } from "react-redux";
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import {
   Box,
   Button,
@@ -9,16 +10,15 @@ import {
   ListItemButton,
   Typography,
 } from "@mui/material";
-import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import assets from "../../assets/index";
 import { useEffect, useState } from "react";
-import boardApi from "../../api/boardApi";
-import { setBoards } from "../../redux/features/boardSlice";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import boardApi from "../../api/boardApi";
+import assets from "../../assets/index";
+import "../../css/custom-scrollbar.css";
+import { setBoards } from "../../redux/features/boardSlice";
 import FavouriteList from "./FavouriteList";
-import { useUser } from "../../context/userContext";
 
 const Sidebar = () => {
   const user = useSelector((state) => state.user.value);
@@ -29,7 +29,6 @@ const Sidebar = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const sidebarWidth = 250;
-  const { currentUser } = useUser();
 
   useEffect(() => {
     const getBoards = async () => {
@@ -83,8 +82,12 @@ const Sidebar = () => {
     }
   };
 
-  const onAddGroup = () => {
-    navigate('/groups/create'); // Assuming you have set up this route
+  const editGroup = () => {
+    navigate("/groups/create"); // Assuming you have set up this route
+  };
+
+  const editUsers = () => {
+    navigate("/users/edit");
   };
 
   return (
@@ -138,9 +141,11 @@ const Sidebar = () => {
             <Typography variant="body2" fontWeight="700">
               Private
             </Typography>
+            { user.role === "Administrator" || user.role === "Projektmanager" && (
             <IconButton onClick={addBoard}>
               <AddBoxOutlinedIcon fontSize="small" />
             </IconButton>
+            )}
           </Box>
         </ListItem>
         <DragDropContext onDragEnd={onDragEnd}>
@@ -187,27 +192,64 @@ const Sidebar = () => {
             )}
           </Droppable>
         </DragDropContext>
-        {currentUser.role === 'Admin' && (
-  <ListItem>
-    <Box
-      sx={{
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
-    >
-      <Typography variant="body2" fontWeight="700">
-        <Button
-          onClick={onAddGroup}
-          sx={{ marginTop: "10px" }}
-        >
-          Add Group
-        </Button>
-      </Typography>
-    </Box>
-  </ListItem>
-)}
+        {/* <!-- Sieht nur der Admin, damit er Gruppen hinzufügen kann */}
+        {user.role === "Administrator" && (
+          <ListItem>
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography variant="body2" fontWeight="700">
+                <Button
+                  onClick={editGroup}
+                  uppercase={false}
+                  sx={{
+                    background: "none",
+                    border: "none",
+                    padding: "0",
+                    font: "inherit",
+                    cursor: "pointer",
+                  }}
+                >
+                  Add Group
+                </Button>
+              </Typography>
+            </Box>
+          </ListItem>
+        )}
+        {/* <!-- Sieht nur der Admin, damit er Rollen verändern kann */}
+        {user.role === "Administrator" && (
+          <ListItem>
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography variant="body2" fontWeight="700">
+                <Button
+                  onClick={editUsers}
+                  uppercase={false}
+                  sx={{
+                    background: "none",
+                    border: "none",
+                    padding: "0",
+                    font: "inherit",
+                    cursor: "pointer",
+                  }}
+                >
+                  Edit Users
+                </Button>
+              </Typography>
+            </Box>
+          </ListItem>
+        )}
       </List>
     </Drawer>
   );
