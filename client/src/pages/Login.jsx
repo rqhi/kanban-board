@@ -96,11 +96,9 @@ const Login = () => {
         </LoadingButton>
       </Box>
       <Button
-        component={Link}
-        to='/signup'
         sx={{ textTransform: 'none' }}
       >
-        Don't have an account? Signup
+        Don't have an account?<br/>Please contact your administrator or supervisor.
       </Button>
     </>
   )

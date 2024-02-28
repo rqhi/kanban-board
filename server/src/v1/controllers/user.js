@@ -66,3 +66,13 @@ exports.login = async (req, res) => {
     res.status(500).json(err)
   }
 }
+
+exports.getAll = async (req, res) => {
+  try {
+    // const boards = await Board.find({ user: req.user._id }).sort('-position')
+    const user = await User.find({}, 'firstname lastname username role')
+    res.status(200).json(user)
+  } catch (err) {
+    res.status(500).json(err)
+  }
+}

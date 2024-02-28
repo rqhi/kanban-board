@@ -6,7 +6,7 @@ exports.create = async (req, res) => {
   try {
     const boardsCount = await Board.find().count()
     const board = await Board.create({
-      user: req.user._id,
+      // user: req.user._id,
       position: boardsCount > 0 ? boardsCount : 0
     })
     res.status(201).json(board)
@@ -17,7 +17,8 @@ exports.create = async (req, res) => {
 
 exports.getAll = async (req, res) => {
   try {
-    const boards = await Board.find({ user: req.user._id }).sort('-position')
+    // const boards = await Board.find({ user: req.user._id }).sort('-position')
+    const boards = await Board.find().sort('-position')
     res.status(200).json(boards)
   } catch (err) {
     res.status(500).json(err)

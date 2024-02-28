@@ -82,12 +82,11 @@ const Sidebar = () => {
     }
   };
 
-  const editGroup = () => {
-    navigate("/groups/create"); // Assuming you have set up this route
-  };
-
   const editUsers = () => {
-    navigate("/users/edit");
+    var token = localStorage.getItem("token");
+    localStorage.removeItem("token");
+    localStorage.setItem(token);
+    navigate("/users");
   };
 
   return (
@@ -139,8 +138,9 @@ const Sidebar = () => {
             }}
           >
             <Typography variant="body2" fontWeight="700">
-              Private
+              Kanban-Boards
             </Typography>
+            {/* <!-- Sieht nur der Projektmanager (und Admin), damit nur dieser neue Boards erstellen kann */}
             { (user.role === "Projektmanager" || user.role === "Administrator") && (
             <IconButton onClick={addBoard}>
               <AddBoxOutlinedIcon fontSize="small" />
@@ -192,35 +192,6 @@ const Sidebar = () => {
             )}
           </Droppable>
         </DragDropContext>
-        {/* <!-- Sieht nur der Admin, damit er Gruppen hinzufügen kann */}
-        {user.role === "Administrator" && (
-          <ListItem>
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <Typography variant="body2" fontWeight="700">
-                <Button
-                  onClick={editGroup}
-                  uppercase={false}
-                  sx={{
-                    background: "none",
-                    border: "none",
-                    padding: "0",
-                    font: "inherit",
-                    cursor: "pointer",
-                  }}
-                >
-                  Add Group
-                </Button>
-              </Typography>
-            </Box>
-          </ListItem>
-        )}
         {/* <!-- Sieht nur der Admin, damit er Rollen verändern kann */}
         {user.role === "Administrator" && (
           <ListItem>
@@ -235,7 +206,6 @@ const Sidebar = () => {
               <Typography variant="body2" fontWeight="700">
                 <Button
                   onClick={editUsers}
-                  uppercase={false}
                   sx={{
                     background: "none",
                     border: "none",

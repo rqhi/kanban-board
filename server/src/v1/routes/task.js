@@ -4,7 +4,7 @@ const tokenHandler = require('../handlers/tokenHandler')
 const validation = require('../handlers/validation')
 const taskController = require('../controllers/task')
 const Task = require('../models/task');
-const { isTeamLeader } = require('../middleware/authMiddleware');
+const { isTeamLeader, isProjektmanager } = require('../middleware/authMiddleware');
 
 router.post(
   '/',
@@ -69,7 +69,7 @@ router.put(
   taskController.update
 )
 
-router.patch('/assign/:taskId', isTeamLeader, async (req, res) => {
+router.patch('/assign/:taskId', isProjektmanager, async (req, res) => {
   try {
     const { taskId } = req.params;
     const { userId } = req.body; // Assuming the request body contains the ID of the user to assign the task to

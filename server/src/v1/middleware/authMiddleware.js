@@ -1,16 +1,16 @@
 const isAdmin = (req, res, next) => {
-    if (req.user.role !== 'ADMIN') {
+    if (req.user.role !== 'Administrator') {
       return res.status(403).send('Access denied.');
     }
     next();
   };
   
-  const isTeamLeader = (req, res, next) => {
-    if (req.user.role !== 'TEAMLEADER' && req.user.role !== 'ADMIN') {
+  const isProjektmanager = (req, res, next) => {
+    if (req.user.role !== 'Projektmanager' && req.user.role !== 'Administrator') {
       return res.status(403).send('Access denied.');
     }
     next();
   };
   
-  module.exports = { isAdmin, isTeamLeader };
+  module.exports = { isAdmin, isProjektmanager };
   

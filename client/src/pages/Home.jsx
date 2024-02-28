@@ -1,6 +1,6 @@
 import { Box } from "@mui/material"
 import LoadingButton from '@mui/lab/LoadingButton'
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { setBoards } from "../redux/features/boardSlice"
 import { useNavigate } from "react-router-dom"
 import boardApi from "../api/boardApi"
@@ -10,6 +10,7 @@ const Home = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
+  const user = useSelector((state) => state.user.value);
 
   const createBoard = async () => {
     setLoading(true)
@@ -31,6 +32,7 @@ const Home = () => {
       alignItems: 'center',
       justifyContent: 'center'
     }}>
+      { (user.role === "Projektmanager" || user.role === "Administrator") && (
       <LoadingButton
         variant='outlined'
         color='success'
@@ -39,6 +41,7 @@ const Home = () => {
       >
         Klicke hier um ein neues Board zu erstellen
       </LoadingButton>
+      )}
     </Box>
   )
 }
