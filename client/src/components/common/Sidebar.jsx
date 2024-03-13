@@ -85,7 +85,7 @@ const Sidebar = () => {
   const editUsers = () => {
     var token = localStorage.getItem("token");
     localStorage.removeItem("token");
-    localStorage.setItem(token);
+    localStorage.setItem(token, token);
     navigate("/users");
   };
 

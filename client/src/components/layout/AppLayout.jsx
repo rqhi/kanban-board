@@ -18,7 +18,7 @@ const AppLayout = () => {
       if (!user) {
         navigate('/login')
       } else {
-        // save user
+        // Benutzer speichern
         dispatch(setUser(user))
         setLoading(false)
       }

@@ -16,12 +16,20 @@ router.post(
   body('confirmPassword').isLength({ min: 8 }).withMessage(
     'confirmPassword must be at least 8 characters'
   ),
-  body('username').custom(value => {
-    return User.findOne({ username: value }).then(user => {
-      if (user) {
-        return Promise.reject('username already used')
-      }
-    })
+  body('username').custom(async (value, { req }) => {
+    const userCount = await User.countDocuments();
+    if (userCount != 0) {
+
+      // Überprüfung ob es den Benutzernamen schon gibt
+      return User.findOne({ username: value }).then(user => {
+        if (user) {
+          return Promise.reject('username already used')
+        }
+      })
+    } else {
+      // Falls es noch kein Benutzer existiert, erstelle den Ersten als Administrator
+      req.body.role = 'Administrator'
+    }
   }),
   validation.validate,
   userController.register
