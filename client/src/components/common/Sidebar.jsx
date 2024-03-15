@@ -27,28 +27,38 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const { boardId } = useParams();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isEditUserClicked, setIsEditUserClicked] = useState(false);
 
   const sidebarWidth = 250;
 
   useEffect(() => {
-    const getBoards = async () => {
-      try {
-        const res = await boardApi.getAll();
-        dispatch(setBoards(res));
-      } catch (err) {
-        alert(err);
-      }
-    };
-    getBoards();
-  }, [dispatch]);
-
-  useEffect(() => {
-    const activeItem = boards.findIndex((e) => e.id === boardId);
-    if (boards.length > 0 && boardId === undefined) {
-      navigate(`/boards/${boards[0].id}`);
+    console.log("EditUser:", isEditUserClicked)
+    if (!isEditUserClicked) {
+      const getBoards = async () => {
+        try {
+          const res = await boardApi.getAll();
+          dispatch(setBoards(res));
+        } catch (err) {
+          alert(err);
+        }
+      };
+      getBoards();
+    } else {
+      navigate("/users");
     }
-    setActiveIndex(activeItem);
-  }, [boards, boardId, navigate]);
+  }, [dispatch], isEditUserClicked);
+  
+  useEffect(() => {
+    if (!isEditUserClicked) {
+      const activeItem = boards.findIndex((e) => e.id === boardId);
+      if (boards.length > 0 && boardId === undefined) {
+        navigate(`/boards/${boards[0].id}`);
+      }
+      setActiveIndex(activeItem);
+    } else {
+      navigate("/users"); 
+    }
+  }, [boards, boardId, navigate, isEditUserClicked]);
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -82,12 +92,16 @@ const Sidebar = () => {
     }
   };
 
-  const editUsers = () => {
-    var token = localStorage.getItem("token");
-    localStorage.removeItem("token");
-    localStorage.setItem(token, token);
+const editUser = () => {
+  const newValue = true
+  setIsEditUserClicked(newValue);
+  try {
     navigate("/users");
-  };
+    } catch (err) {
+      alert(err);
+    }
+    }; 
+
 
   return (
     <Drawer
@@ -205,7 +219,7 @@ const Sidebar = () => {
             >
               <Typography variant="body2" fontWeight="700">
                 <Button
-                  onClick={editUsers}
+                  onClick={() => setIsEditUserClicked(true)}
                   sx={{
                     background: "none",
                     border: "none",
