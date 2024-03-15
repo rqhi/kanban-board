@@ -31,9 +31,9 @@ const Sidebar = () => {
 
   const sidebarWidth = 250;
 
-  useEffect(() => {
+  /* useEffect(() => {
     console.log("EditUser:", isEditUserClicked)
-    if (!isEditUserClicked) {
+    if (isEditUserClicked == false) {
       const getBoards = async () => {
         try {
           const res = await boardApi.getAll();
@@ -43,22 +43,50 @@ const Sidebar = () => {
         }
       };
       getBoards();
-    } else {
+      const activeItem = boards.findIndex((e) => e.id === boardId);
+      if (boards.length > 0 && boardId === undefined) {
+        navigate(`/boards/${boards[0].id}`);
+      }
+      setActiveIndex(activeItem);
+    } if (isEditUserClicked == true) {
       navigate("/users");
-    }
-  }, [dispatch], isEditUserClicked);
-  
+    } 
+  }, [boards, boardId, navigate, dispatch]); */
+
   useEffect(() => {
+    console.log("EditUser:", isEditUserClicked);
+
+    if (isEditUserClicked === false) {
+      const getBoards = async () => {
+        try {
+          const res = await boardApi.getAll();
+          // Only update if boards are different (consider deep equality check here)
+          dispatch(setBoards(res));
+        } catch (err) {
+          alert(err);
+        }
+      };
+      getBoards();
+    }
+}, [dispatch, isEditUserClicked]); // Removed `boards` from dependencies to avoid loop
+
+useEffect(() => {
+    // Logic that depends on `boards` and `boardId`, but does not update `boards`
     if (!isEditUserClicked) {
       const activeItem = boards.findIndex((e) => e.id === boardId);
       if (boards.length > 0 && boardId === undefined) {
         navigate(`/boards/${boards[0].id}`);
       }
       setActiveIndex(activeItem);
-    } else {
-      navigate("/users"); 
     }
-  }, [boards, boardId, navigate, isEditUserClicked]);
+}, [boards, boardId, navigate, isEditUserClicked]); // This effect runs for board changes
+
+useEffect(() => {
+    if (isEditUserClicked) {
+      navigate("/users");
+    }
+}, [isEditUserClicked, navigate]); // Separated effect for isEditUserClicked
+
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -91,17 +119,6 @@ const Sidebar = () => {
       alert(err);
     }
   };
-
-const editUser = () => {
-  const newValue = true
-  setIsEditUserClicked(newValue);
-  try {
-    navigate("/users");
-    } catch (err) {
-      alert(err);
-    }
-    }; 
-
 
   return (
     <Drawer
@@ -184,7 +201,9 @@ const editUser = () => {
                           cursor: snapshot.isDragging
                             ? "grab"
                             : "pointer!important",
-                        }}
+                        }
+                      }
+                      onClick={() => setIsEditUserClicked(false)}
                       >
                         <Typography
                           variant="body2"
