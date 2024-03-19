@@ -14,6 +14,7 @@ import Moment from "moment";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import taskApi from "../../api/taskApi";
+import commentsApi from "../../api/commentsApi";
 
 import "../../css/custom-editor.css";
 
@@ -43,6 +44,8 @@ const TaskModal = (props) => {
   const [priority, setPriority] = useState("Low");
   const [content, setContent] = useState("");
   const editorWrapperRef = useRef();
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
 
   useEffect(() => {
     setTask(props.task);
@@ -59,7 +62,22 @@ const TaskModal = (props) => {
 
       updateEditorHeight();
     }
-  }, [props.task]);
+    // Fetch comments
+    const fetchComments = async () => {
+      try {
+        const response = await commentsApi.list(task);
+        if (response.status === 200) {
+          setComments(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    };
+
+    if (task) {
+      fetchComments();
+    }
+  }, [props.task, task]);
 
   const updateEditorHeight = () => {
     setTimeout(() => {
@@ -121,6 +139,22 @@ const TaskModal = (props) => {
       task.content = data;
       setContent(data);
       props.onUpdate(task);
+    }
+  };
+
+  const handleAddComment = async (event) => {
+    event.preventDefault();
+    console.log(task)
+    console.log(comments)
+    try {
+      const response = await commentsApi.create(task.id, { text: comments });
+      console.log("response", response);
+      if (response.status === 200) {
+        setComments([...comments, response.data]);
+        setNewComment("");
+      }
+    } catch (error) {
+      console.error("Error adding comment:", error);
     }
   };
 
@@ -200,18 +234,18 @@ const TaskModal = (props) => {
               <option value="High">High</option>
             </TextField>
 
-{/*             <Typography variant="body2" fontWeight="700">
+            {/*             <Typography variant="body2" fontWeight="700">
               {task !== undefined
                 ? Moment(task.createdAt).format("YYYY-MM-DD")
                 : ""}
             </Typography> */}
-            
+
             <Divider sx={{ margin: "1.5rem 0" }} />
             <Box
               ref={editorWrapperRef}
               sx={{
                 position: "relative",
-                height: "80%",
+                height: "50%",
                 overflowX: "hidden",
                 overflowY: "auto",
               }}
@@ -224,6 +258,21 @@ const TaskModal = (props) => {
                 onBlur={updateEditorHeight}
               />
             </Box>
+            <form onSubmit={handleAddComment}>
+              <input
+                type="text"
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+              />
+              <button type="submit">Add Comment</button>
+            </form>
+            {comments.map((comment) => (
+              <div key={comment._id}>
+                <p>{comment.text}</p>
+                <p>Posted by {comment.userId}</p>{" "}
+                {/* Replace with user's name if available */}
+              </div>
+            ))}
           </Box>
         </Box>
       </Fade>

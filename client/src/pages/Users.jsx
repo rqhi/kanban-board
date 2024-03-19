@@ -11,7 +11,7 @@ const Users = () => {
         console.log('Trying to fetch users');
         const response = await userApi.getAll();
         setUsers(response);
-        console.log(response)
+        console.log('Benutzerinformationen: ', response); 
       } catch (error) {
         console.error('Failed to fetch users:', error);
       }

@@ -31,25 +31,62 @@ const Sidebar = () => {
 
   const sidebarWidth = 250;
 
-  useEffect(() => {
-    const getBoards = async () => {
-      try {
-        const res = await boardApi.getAll();
-        dispatch(setBoards(res));
-      } catch (err) {
-        alert(err);
+  /* useEffect(() => {
+    console.log("EditUser:", isEditUserClicked)
+    if (isEditUserClicked == false) {
+      const getBoards = async () => {
+        try {
+          const res = await boardApi.getAll();
+          dispatch(setBoards(res));
+        } catch (err) {
+          alert(err);
+        }
+      };
+      getBoards();
+      const activeItem = boards.findIndex((e) => e.id === boardId);
+      if (boards.length > 0 && boardId === undefined) {
+        navigate(`/boards/${boards[0].id}`);
       }
-    };
-    getBoards();
-  }, [dispatch]);
+      setActiveIndex(activeItem);
+    } if (isEditUserClicked == true) {
+      navigate("/users");
+    } 
+  }, [boards, boardId, navigate, dispatch]); */
 
   useEffect(() => {
-    const activeItem = boards.findIndex((e) => e.id === boardId);
-    if (boards.length > 0 && boardId === undefined) {
-      navigate(`/boards/${boards[0].id}`);
+    console.log("EditUser:", isEditUserClicked);
+
+    if (isEditUserClicked === false) {
+      const getBoards = async () => {
+        try {
+          const res = await boardApi.getAll();
+          // Only update if boards are different (consider deep equality check here)
+          dispatch(setBoards(res));
+        } catch (err) {
+          alert(err);
+        }
+      };
+      getBoards();
     }
-    setActiveIndex(activeItem);
-  }, [boards, boardId, navigate]);
+}, [dispatch, isEditUserClicked]); // Removed `boards` from dependencies to avoid loop
+
+useEffect(() => {
+    // Logic that depends on `boards` and `boardId`, but does not update `boards`
+    if (!isEditUserClicked) {
+      const activeItem = boards.findIndex((e) => e.id === boardId);
+      if (boards.length > 0 && boardId === undefined) {
+        navigate(`/boards/${boards[0].id}`);
+      }
+      setActiveIndex(activeItem);
+    }
+}, [boards, boardId, navigate, isEditUserClicked]); // This effect runs for board changes
+
+useEffect(() => {
+    if (isEditUserClicked) {
+      navigate("/users");
+    }
+}, [isEditUserClicked, navigate]); // Separated effect for isEditUserClicked
+
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -175,7 +212,9 @@ const Sidebar = () => {
                           cursor: snapshot.isDragging
                             ? "grab"
                             : "pointer!important",
-                        }}
+                        }
+                      }
+                      onClick={() => setIsEditUserClicked(false)}
                       >
                         <Typography
                           variant="body2"
@@ -210,7 +249,7 @@ const Sidebar = () => {
             >
               <Typography variant="body2" fontWeight="700">
                 <Button
-                  onClick={editUsers}
+                  onClick={() => setIsEditUserClicked(true)}
                   sx={{
                     background: "none",
                     border: "none",
