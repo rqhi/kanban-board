@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useHistory } from "react-router-dom";
 import boardApi from "../../api/boardApi";
 import assets from "../../assets/index";
 import "../../css/custom-scrollbar.css";
@@ -27,6 +27,7 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const { boardId } = useParams();
   const [activeIndex, setActiveIndex] = useState(0);
+  const history = useHistory();
 
   const sidebarWidth = 250;
 
@@ -82,10 +83,14 @@ const Sidebar = () => {
     }
   };
 
-  const editUsers = () => {
-    var token = localStorage.getItem("token");
-    localStorage.removeItem("token");
-    localStorage.setItem(token, token);
+  const editUsers = async () => {
+    const response = await fetch('/auth/refresh', {
+      method: 'POST',
+      credentials: 'include', // This is required to send the cookie.
+    });
+    const data = await response.json();
+    const newToken = data.token;
+    localStorage.setItem('token', newToken);
     navigate("/users");
   };
 
