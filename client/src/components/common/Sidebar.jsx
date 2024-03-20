@@ -28,6 +28,7 @@ const Sidebar = () => {
   const { boardId } = useParams();
   const [activeIndex, setActiveIndex] = useState(0);
   const history = useHistory();
+  const [isEditUserClicked, setIsEditUserClicked] = useState(false);
 
   const sidebarWidth = 250;
 
