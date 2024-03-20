@@ -32,7 +32,7 @@ const Home = () => {
       alignItems: 'center',
       justifyContent: 'center'
     }}>
-      // Hier wird geprüft, ob der Benutzer ein Projektmanager oder Administrator ist, um die Schaltfläche zum Erstellen eines neuen Boards anzuzeigen 
+      {/* Hier wird geprüft, ob der Benutzer ein Projektmanager oder Administrator ist, um die Schaltfläche zum Erstellen eines neuen Boards anzuzeigen  */}
       { (user.role === "Projektmanager" || user.role === "Administrator") && (
       <LoadingButton
         variant='outlined'

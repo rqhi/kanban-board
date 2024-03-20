@@ -20,7 +20,7 @@ const UserLayout = () => {
       } else {
         // Benutzer speichern
         dispatch(setUser(user))
-         setLoading(false)
+        setLoading(false)
       }
     }
     checkAuth()

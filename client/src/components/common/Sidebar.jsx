@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams, useHistory } from "react-router-dom";
+import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 import boardApi from "../../api/boardApi";
 import assets from "../../assets/index";
 import "../../css/custom-scrollbar.css";
@@ -24,37 +24,15 @@ const Sidebar = () => {
   const user = useSelector((state) => state.user.value);
   const boards = useSelector((state) => state.board.value);
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const { boardId } = useParams();
   const [activeIndex, setActiveIndex] = useState(0);
-  const history = useHistory();
   const [isEditUserClicked, setIsEditUserClicked] = useState(false);
 
   const sidebarWidth = 250;
 
-  /* useEffect(() => {
-    console.log("EditUser:", isEditUserClicked)
-    if (isEditUserClicked == false) {
-      const getBoards = async () => {
-        try {
-          const res = await boardApi.getAll();
-          dispatch(setBoards(res));
-        } catch (err) {
-          alert(err);
-        }
-      };
-      getBoards();
-      const activeItem = boards.findIndex((e) => e.id === boardId);
-      if (boards.length > 0 && boardId === undefined) {
-        navigate(`/boards/${boards[0].id}`);
-      }
-      setActiveIndex(activeItem);
-    } if (isEditUserClicked == true) {
-      navigate("/users");
-    } 
-  }, [boards, boardId, navigate, dispatch]); */
-
-  useEffect(() => {
+/*   useEffect(() => {
     console.log("EditUser:", isEditUserClicked);
 
     if (isEditUserClicked === false) {
@@ -86,7 +64,32 @@ useEffect(() => {
     if (isEditUserClicked) {
       navigate("/users");
     }
-}, [isEditUserClicked, navigate]); // Separated effect for isEditUserClicked
+}, [isEditUserClicked, navigate]); // Separated effect for isEditUserClicked */
+
+useEffect(() => {
+  // This hook might attempt to navigate to the boards page, but only if we're not already looking at boards, users, or login
+  if (!isEditUserClicked && !location.pathname.includes('/boards') && !location.pathname.includes('/users') && !location.pathname.includes('/login')) {
+    const getBoards = async () => {
+      try {
+        const res = await boardApi.getAll();
+        dispatch(setBoards(res));
+        if (boards.length > 0 && !location.pathname.includes('/boards')) {
+          navigate(`/boards/${boards[0].id}`);
+        }
+      } catch (err) {
+        alert(err);
+      }
+    };
+    getBoards();
+  }
+}, [dispatch, isEditUserClicked, location.pathname, navigate, boards.length]);
+
+useEffect(() => {
+  // Direct navigation to "/users" occurs only if the user clicks to edit and we're not already on a users-related path
+  if (isEditUserClicked && !location.pathname.includes('/users')) {
+    navigate("/users");
+  }
+}, [isEditUserClicked, location.pathname, navigate]);
 
 
   const logout = () => {
@@ -119,17 +122,6 @@ useEffect(() => {
     } catch (err) {
       alert(err);
     }
-  };
-
-  const editUsers = async () => {
-    const response = await fetch('/auth/refresh', {
-      method: 'POST',
-      credentials: 'include', // This is required to send the cookie.
-    });
-    const data = await response.json();
-    const newToken = data.token;
-    localStorage.setItem('token', newToken);
-    navigate("/users");
   };
 
   return (

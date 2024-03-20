@@ -14,6 +14,7 @@ import Board from "./pages/Board";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Users from "./pages/Users";
+import EditUsers from "./pages/EditUsers";
 
 function App() {
   const theme = createTheme({
@@ -27,17 +28,18 @@ function App() {
         <Routes>
           <Route path="/" element={<AuthLayout />}>
             <Route path="login" element={<Login />} />
-            <Route path="signup" element={<Signup />} />
+            <Route path="users/signup" element={<Signup />} />
           </Route>
           <Route path="/" element={<AppLayout />}>
             <Route index element={<Home />} />
             <Route path="boards" element={<Home />} />
             <Route path="boards/:boardId" element={<Board />} />
-            <Route path="users" element={<Users />} />
           </Route>
-{/*           <Route path="/" element={<UserLayout />}>
+          <Route path="/" element={<UserLayout />}>
             <Route path="users" element={<Users />} />
-          </Route> */}
+            <Route path="users/edit/:username" element={<EditUsers />} />
+            <Route path="users/signup" element={<Signup />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

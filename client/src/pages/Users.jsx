@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import userApi from '../api/userApi';
+import { useNavigate } from 'react-router-dom';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -45,6 +47,7 @@ const Users = () => {
                 </TableCell>
                 <TableCell>{user.username}</TableCell>
                 <TableCell>{user.role}</TableCell>
+                <button onClick={() => navigate(`/users/edit/${user.username}`)}>Edit</button>
               </TableRow>
             ))}
           </TableBody>
