@@ -1,0 +1,24 @@
+[{
+  "_id": {
+    "$oid": "65d3875b4e7a639fd68646aa"
+  },
+  "icon": "📃",
+  "title": "Projektname",
+  "description": "Füge hier eine Beschreibung hinzu\n    🟢 Eine Beschreibung kann auch mehrzeilig sein\n    🟢 Lass uns starten...",
+  "position": 0,
+  "favourite": false,
+  "favouritePosition": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "660971851649d9770505ea72"
+  },
+  "icon": "📃",
+  "title": "Test Board 1",
+  "description": "Füge hier eine Beschreibung hinzu\n    🟢 Eine Beschreibung kann auch mehrzeilig sein\n    🟢 Lass uns starten...",
+  "position": 1,
+  "favourite": false,
+  "favouritePosition": 0,
+  "__v": 0
+}]

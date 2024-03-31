@@ -1,0 +1,44 @@
+[{
+  "_id": {
+    "$oid": "65d36c8ce47c2be00d5b0e34"
+  },
+  "role": "Administrator",
+  "username": "raphael-admin",
+  "password": "U2FsdGVkX1/gnAbetCUKaJE2zhT6TRUJKZVQn0X0WTE=",
+  "__v": 0,
+  "firstname": "Raphael",
+  "lastname": "Kletting"
+},
+{
+  "_id": {
+    "$oid": "65d36ca7e47c2be00d5b0e3c"
+  },
+  "role": "Projektmanager",
+  "username": "maria-manager",
+  "password": "U2FsdGVkX1+z/bri8aD4GTMy1VZPVjui/YbpD0enhNc=",
+  "__v": 0,
+  "firstname": "Maria",
+  "lastname": "Finkbeiner"
+},
+{
+  "_id": {
+    "$oid": "65d36cb2e47c2be00d5b0e44"
+  },
+  "role": "Projektmanager",
+  "username": "selin-manager",
+  "password": "U2FsdGVkX1/FeS7MDYNBUHdsi3U8fT12+95mmD009vU=",
+  "__v": 0,
+  "firstname": "Selin",
+  "lastname": "Demiröz"
+},
+{
+  "_id": {
+    "$oid": "65d4a8219de88e98a24e85e5"
+  },
+  "role": "Teammitglied",
+  "firstname": "Louis",
+  "lastname": "Sanwald",
+  "username": "louissanwald",
+  "password": "U2FsdGVkX1/59zfNg3JFQPhgnXY2iCwTOxpWm6vSauY=",
+  "__v": 0
+}]

@@ -1,0 +1,83 @@
+[{
+  "_id": {
+    "$oid": "65d387664e7a639fd68646b8"
+  },
+  "section": {
+    "$oid": "65d387634e7a639fd68646b1"
+  },
+  "validTill": {
+    "$date": "2024-03-04T16:52:42.122Z"
+  },
+  "priority": "Low",
+  "title": "erste task -high",
+  "content": "",
+  "position": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65d3877f4e7a639fd68646bf"
+  },
+  "section": {
+    "$oid": "65d387634e7a639fd68646b1"
+  },
+  "validTill": {
+    "$date": "2024-03-04T16:52:42.122Z"
+  },
+  "priority": "Low",
+  "title": "zweite task - low",
+  "content": "",
+  "position": 1,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "66099a83cf441e7b2e4dd4e8"
+  },
+  "section": {
+    "$oid": "66098f44cf441e7b2e4dd404"
+  },
+  "validTill": {
+    "$date": "2024-04-14T15:39:41.669Z"
+  },
+  "priority": "Middle",
+  "title": "Aufgabe 1",
+  "content": "<p>Beispiel beschreibung einer Aufgabe</p>",
+  "position": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6609baa9042280ad12a79045"
+  },
+  "section": {
+    "$oid": "66098f48cf441e7b2e4dd409"
+  },
+  "validTill": {
+    "$date": "2024-04-14T19:32:55.730Z"
+  },
+  "priority": "Low",
+  "title": "Aufgabe 5",
+  "content": "<p>Beispielaufgabe einer Aufgabe in einer Sektion 2</p>",
+  "position": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6609bf5b6d456468eb074bc5"
+  },
+  "section": {
+    "$oid": "66098f44cf441e7b2e4dd404"
+  },
+  "validTill": {
+    "$date": "2024-04-14T19:54:01.561Z"
+  },
+  "priority": "Low",
+  "title": "",
+  "content": "",
+  "position": 1,
+  "assignedTo": {
+    "$oid": "65d36c8ce47c2be00d5b0e34"
+  },
+  "__v": 0
+}]
