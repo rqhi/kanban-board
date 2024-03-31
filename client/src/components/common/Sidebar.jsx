@@ -52,7 +52,7 @@ useEffect(() => {
 
 useEffect(() => {
   // Direct navigation to "/users" occurs only if the user clicks to edit and we're not already on a users-related path
-  if (isEditUserClicked && !location.pathname.includes('/users')) {
+  if (isEditUserClicked) {
     navigate("/users");
   }
 }, [isEditUserClicked, location.pathname, navigate]);

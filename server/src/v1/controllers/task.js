@@ -8,7 +8,8 @@ exports.create = async (req, res) => {
     const tasksCount = await Task.find({ section: sectionId }).count()
     const task = await Task.create({
       section: sectionId,
-      position: tasksCount > 0 ? tasksCount : 0
+      position: tasksCount > 0 ? tasksCount : 0,
+      assignedTo: req.user.id,
     })
     task._doc.section = section
     res.status(201).json(task)

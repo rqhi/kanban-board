@@ -15,7 +15,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import taskApi from "../../api/taskApi";
 import commentsApi from "../../api/commentsApi";
-
+import userApi from "../../api/userApi";
 import "../../css/custom-editor.css";
 
 const modalStyle = {
@@ -45,7 +45,9 @@ const TaskModal = (props) => {
   const [content, setContent] = useState("");
   const editorWrapperRef = useRef();
   const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState('');
+  const [newComment, setNewComment] = useState("");
+  const [users, setUsers] = useState([]);
+  const [assignedUser, setAssignedUser] = useState("");
 
   useEffect(() => {
     setTask(props.task);
@@ -56,6 +58,7 @@ const TaskModal = (props) => {
         : Moment().add(14, "days").format("YYYY-MM-DD")
     );
     setPriority(props.task?.priority || "Low");
+    setAssignedUser(props.task?.assignedUserId || "");
     setContent(props.task !== undefined ? props.task.content : "");
     if (props.task !== undefined) {
       isModalClosed = false;
@@ -65,17 +68,28 @@ const TaskModal = (props) => {
     // Fetch comments
     const fetchComments = async () => {
       try {
-        const response = await commentsApi.list(task);
-        if (response.status === 200) {
-          setComments(response.data);
+        const response = await commentsApi.list(task.id);
+        if (response !== undefined) {
+          setComments(response);
         }
       } catch (error) {
         console.error("Error fetching comments:", error);
       }
     };
 
+    const fetchUser = async () => {
+      try {
+        const response = await userApi.getAll(); // Assume this API call exists and returns a list of users
+        setUsers(response.data);
+
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
+
     if (task) {
       fetchComments();
+      fetchUser();
     }
   }, [props.task, task]);
 
@@ -91,6 +105,7 @@ const TaskModal = (props) => {
 
   const onClose = () => {
     isModalClosed = true;
+    console.log(task);
     props.onUpdate(task);
     props.onClose();
   };
@@ -108,6 +123,7 @@ const TaskModal = (props) => {
   const updateTitle = async (e) => {
     clearTimeout(timer);
     const newTitle = e.target.value;
+    console.log(newTitle);
     timer = setTimeout(async () => {
       try {
         await taskApi.update(boardId, task.id, { title: newTitle });
@@ -125,8 +141,6 @@ const TaskModal = (props) => {
     clearTimeout(timer);
     const data = editor.getData();
 
-    console.log({ isModalClosed });
-
     if (!isModalClosed) {
       timer = setTimeout(async () => {
         try {
@@ -142,14 +156,63 @@ const TaskModal = (props) => {
     }
   };
 
+  const updateValidTill = async (e) => {
+    clearTimeout(timer);
+    const newValidTill = e.target.value;
+    timer = setTimeout(async () => {
+      try {
+        await taskApi.update(boardId, task.id, { validTill: newValidTill });
+      } catch (err) {
+        alert("Failed to update valid till date: " + err.message);
+      }
+    }, timeout);
+
+    task.validTill = newValidTill;
+    setValidTill(newValidTill);
+    props.onUpdate(task);
+  };
+
+  const updatePriority = async (e) => {
+    clearTimeout(timer);
+    const newPriority = e.target.value;
+    timer = setTimeout(async () => {
+      try {
+        await taskApi.update(boardId, task.id, { priority: newPriority });
+      } catch (err) {
+        alert("Failed to update priority: " + err.message);
+      }
+    }, timeout);
+
+    task.priority = newPriority;
+    setPriority(newPriority);
+    props.onUpdate(task);
+  };
+
+  const updateAssignedUser = async (e) => {
+    clearTimeout(timer);
+    const newAssignedUserId = e.target.value;
+    timer = setTimeout(async () => {
+      try {
+        await taskApi.update(boardId, task.id, {
+          assignedUserId: newAssignedUserId,
+        });
+      } catch (err) {
+        alert("Failed to update assigned user: " + err.message);
+      }
+    }, timeout);
+
+    task.assignedUserId = newAssignedUserId;
+    setAssignedUser(newAssignedUserId);
+    props.onUpdate(task);
+  };
+
   const handleAddComment = async (event) => {
     event.preventDefault();
-    console.log(task)
-    console.log(comments)
+    if (newComment.trim() === "") return;
+
     try {
-      const response = await commentsApi.create(task.id, { text: comments });
-      console.log("response", response);
-      if (response.status === 200) {
+      const response = await commentsApi.create(task.id, { text: newComment });
+      if (response !== undefined) {
         setComments([...comments, response.data]);
         setNewComment("");
       }
@@ -210,7 +273,7 @@ const TaskModal = (props) => {
               label="Fällig bis"
               type="date"
               value={validTill}
-              onChange={(e) => setValidTill(e.target.value)}
+              onChange={updateValidTill}
               sx={{ width: "100%", marginBottom: "10px" }}
               InputLabelProps={{
                 shrink: true,
@@ -221,7 +284,7 @@ const TaskModal = (props) => {
               select
               label="Priorität"
               value={priority}
-              onChange={(e) => setPriority(e.target.value)}
+              onChange={updatePriority}
               fullWidth
               SelectProps={{
                 native: true,
@@ -234,11 +297,24 @@ const TaskModal = (props) => {
               <option value="High">High</option>
             </TextField>
 
-            {/*             <Typography variant="body2" fontWeight="700">
-              {task !== undefined
-                ? Moment(task.createdAt).format("YYYY-MM-DD")
-                : ""}
-            </Typography> */}
+            <TextField
+              select
+              label="Assign to"
+              value={assignedUser}
+              onChange={updateAssignedUser}
+              fullWidth
+              SelectProps={{
+                native: true,
+              }}
+              variant="outlined"
+              sx={{ marginBottom: "10px" }}
+            >
+              {users.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.firstname} {user.lastname}
+                </option>
+              ))}
+            </TextField>
 
             <Divider sx={{ margin: "1.5rem 0" }} />
             <Box
@@ -259,20 +335,38 @@ const TaskModal = (props) => {
               />
             </Box>
             <form onSubmit={handleAddComment}>
-              <input
+              <TextField
                 type="text"
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
+                label="Comment"
+                variant="outlined"
+                fullWidth
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    handleAddComment(e);
+                  }
+                }}
               />
-              <button type="submit">Add Comment</button>
             </form>
-            {comments.map((comment) => (
-              <div key={comment._id}>
-                <p>{comment.text}</p>
-                <p>Posted by {comment.userId}</p>{" "}
-                {/* Replace with user's name if available */}
-              </div>
-            ))}
+            <Box
+              sx={{
+                maxHeight: "15%", // Adjust based on the size of your comments
+                overflowY: "auto", // Enables vertical scrolling
+                marginBottom: "10px",
+                borderBottom: 1,
+                borderColor: "divider",
+              }}
+            >
+              {comments.map((comment) => (
+                <Box key={comment._id} sx={{ paddingBottom: "10px" }}>
+                  <Typography variant="body1">{comment?.text}</Typography>
+                  <Typography variant="body2" sx={{ fontSize: "0.75rem" }}>
+                    von {comment?.userId}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
           </Box>
         </Box>
       </Fade>

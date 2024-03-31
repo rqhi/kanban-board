@@ -90,19 +90,33 @@ exports.getUser = async (req, res) => {
   } 
 }
 
+
 // Update a user by id
 exports.updateUser = async (req, res) => {
   try {
+    // Check if the password field is present in the request
+    if (req.body.password) {
+      // Hash the new password
+      req.body.password = CryptoJS.AES.encrypt(
+        req.body.password,
+        process.env.PASSWORD_SECRET_KEY
+      ).toString();
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       req.params.userId,
       { $set: req.body },
       { new: true }
-    );
+    ).lean(); // Use .lean() to get a plain JavaScript object if you don't need a mongoose document
+
+    // Optionally, remove the password field from the response
+    delete updatedUser.password;
+
     res.status(200).json(updatedUser);
   } catch (err) {
     res.status(500).json(err);
   }
-}
+};
 
 // Delete a user by id
 exports.deleteUser = async (req, res) => {

@@ -12,7 +12,6 @@ const mongoose = require('mongoose');
 
 dotenv.config();
 
-
 /**
  * Get port from environment and store in Express.
  */

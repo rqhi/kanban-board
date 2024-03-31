@@ -1,11 +1,14 @@
 const Comment = require('../models/comment');
 
 exports.create = async (req, res) => {
+  console.log("Creating a new comment with data:", req.body);
+  console.log("Param: ", req.params);
+  console.log("req:", req.user.id)
   try {
     const comment = await Comment.create({
       text: req.body.text,
       taskId: req.params.taskId,
-      userId: req.user._id, // assuming the user is attached to the request
+      userId: req.user.id, // assuming the user is attached to the request
     });
     res.status(201).json(comment);
   } catch (err) {
